@@ -16,6 +16,7 @@ import org.apache.http.impl.client.HttpClients;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
 
 public class FirstProject {
@@ -114,27 +115,41 @@ public class FirstProject {
 //        httpget.setHeader("Authorization"," Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjEuNjYxOTI2NjY5MjU4OTYxNWUrNiwiZXhwIjoxNjYxOTY5ODY5LCJpc3MiOiJtYWNyb21ldGEiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJyb290Iiwic3ViIjoibWFkdTE0MF9nbWFpbC5jb20iLCJ0ZW5hbnQiOiJtYWR1MTQwX2dtYWlsLmNvbSJ9.dVQccQomvpT2VktQJtvvuLKrdeART38Ek4Y6V5tzrB4=");
 //        CloseableHttpResponse response = httpclient.execute(httpget);
 
+//        HttpConnection arangoHttpConnection = new HttpConnection.Builder()
+//                .useSsl(true)
+//                .host(new HostDescription("api-varden-4f0f3c4f.paas.macrometa.io", 443))
+//                .serializationUtil(new ArangoJack())
+//                .build();
+//        arangoHttpConnection.setJwt("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjEuNjYyMDg2Njk1NTg0OTUwN2UrNiwiZXhwIjoxNjYyMTI5ODk1LCJpc3MiOiJtYWNyb21ldGEiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJyb290Iiwic3ViIjoibWFkdTE0MF9nbWFpbC5jb20iLCJ0ZW5hbnQiOiJtYWR1MTQwX2dtYWlsLmNvbSJ9.ydj-G2MBEVbDchbtYUijFb4uJ_APeZibkCidF-WMlVc=");
+//        System.out.println(arangoHttpConnection.toString());
+//        Request req = new Request(DbName.SYSTEM, RequestType.GET,"/_api/environments");
 
-        HttpConnection arangoHttpConnection = new HttpConnection.Builder()
-                .useSsl(true)
-                .host(new HostDescription("api-varden-4f0f3c4f.paas.macrometa.io", 443))
-                .serializationUtil(new ArangoJack())
+//        while(true) {
+//            Response res = arangoHttpConnection.execute(req);
+//
+//            System.out.println(res.getBody().toString());
+//            try {
+////                res.wait();
+//                Thread.sleep(100);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
+        DB db = new DB.Builder().hostName("api-varden-4f0f3c4f.paas.macrometa.io").port(443).build();
+
+        HTTPEndPoint endPoint = new HTTPEndPoint("/_fabric/_system/_api/collection?excludeSystem=true");
+
+        HTTPRequest request = new HTTPRequest.Builder()
+                .RequestType(HTTPMethod.GET)
+                .EndPoint(endPoint)
                 .build();
-        arangoHttpConnection.setJwt("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjEuNjYxOTI2NjY5MjU4OTYxNWUrNiwiZXhwIjoxNjYxOTY5ODY5LCJpc3MiOiJtYWNyb21ldGEiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJyb290Iiwic3ViIjoibWFkdTE0MF9nbWFpbC5jb20iLCJ0ZW5hbnQiOiJtYWR1MTQwX2dtYWlsLmNvbSJ9.dVQccQomvpT2VktQJtvvuLKrdeART38Ek4Y6V5tzrB4=");
-        System.out.println(arangoHttpConnection.toString());
-        Request req = new Request(DbName.SYSTEM, RequestType.GET,"/_db/_system/_api/database");
 
-        while(true) {
-            Response res = arangoHttpConnection.execute(req);
+        HTTPResponse.ResponseBody responseBody = db.execute(request);
 
-            System.out.println(res.getBody().toString());
-            try {
-//                res.wait();
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        Iterator itr = responseBody.getResult().stream().iterator();
+        while(itr.hasNext())
+            System.out.println(itr.next());
 
 //        arangoDB.shutdown();
     }
