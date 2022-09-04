@@ -1,3 +1,5 @@
+package com.c8db.http;
+
 public class HTTPEndPoint {
 
     // Immutable endpoint

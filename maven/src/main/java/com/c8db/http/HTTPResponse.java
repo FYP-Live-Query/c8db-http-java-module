@@ -1,18 +1,19 @@
+package com.c8db.http;
+
+import com.c8db.util.ResponseBodyDeserializer;
 import com.arangodb.velocypack.VPackSlice;
 import com.arangodb.velocystream.Response;
 import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 public class HTTPResponse {
 
     private Response response;
+    private VPackSlice body;
     private static ObjectMapper objectMapper = new ObjectMapper();
 
 
@@ -68,15 +69,24 @@ public class HTTPResponse {
 
     public HTTPResponse(Response response){
         this.response = response;
+        this.body = response.getBody();
         SimpleModule module =
-                new SimpleModule("ResponseBodyDeserializer",
-                        new Version(3, 1, 8, null, null, null));
+                new SimpleModule("com.c8db.http.Util.ResponseBodyDeserializer",
+                        new Version(1, 0, 0, null, null, null));
+
         module.addDeserializer(ResponseBody.class, new ResponseBodyDeserializer(ResponseBody.class));
+
         objectMapper.registerModule(module);
     }
 
-    public ResponseBody parseJSON() throws JsonProcessingException {
-        return objectMapper.readValue(response.getBody().toString(),ResponseBody.class);
+    public String parseJSONtoString() throws JsonProcessingException {
+        // TODO : Writing a custom JSON parser
+        // return objectMapper.readValue(response.getBody().toString(),ResponseBody.class);
+        return body.toString();
+    }
+
+    public VPackSlice responseBody() throws JsonProcessingException {
+        return body;
     }
 
 }

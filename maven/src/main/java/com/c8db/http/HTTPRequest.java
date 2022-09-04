@@ -1,3 +1,5 @@
+package com.c8db.http;
+
 import com.arangodb.DbName;
 import com.arangodb.velocystream.Request;
 import com.arangodb.velocystream.RequestType;

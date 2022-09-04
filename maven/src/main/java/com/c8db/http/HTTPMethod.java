@@ -1,3 +1,5 @@
+package com.c8db.http;
+
 public enum HTTPMethod {
 
     DELETE(0),
