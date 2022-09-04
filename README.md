@@ -1,4 +1,11 @@
 
+# Macrometa C8DB HTTP Access
+
+This is a simple java interface for accessing HTTP API of c8db in macrometa GDN.
+
+
+
+
 ## Usage/Examples
 
 Create C8DB object with host name, port and API key. This will create a connection to the database.
